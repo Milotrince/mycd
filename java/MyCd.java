@@ -1,5 +1,3 @@
-import java.io.File;
-import java.io.IOException;
 import java.util.Arrays;
 
 public class MyCd {
@@ -8,7 +6,7 @@ public class MyCd {
         String path = fromDir;
 
         if (isAbsolutePath(toDir)) {
-            return normalizePath(toDir);
+            path = "/";
         }
 
         for (String d : toDir.split("/")) {
@@ -22,16 +20,6 @@ public class MyCd {
         }
 
         return normalizePath(path);
-    }
-
-    public static String cheapMyCd(String fromDir, String toDir) {
-        File fromFile = new File(fromDir);
-        File toFile = new File(fromFile, toDir);
-        try {
-            return toFile.getCanonicalPath();
-        } catch (IOException ex) {
-            return getErrorMessage(toDir);
-        }
     }
 
     private static boolean isAbsolutePath(String path) {
@@ -52,8 +40,11 @@ public class MyCd {
 
     private static String removeLastDir(String path) {
         String[] temp = path.split("/");
-        temp = Arrays.copyOf(temp, temp.length-1);
-        return String.join("/", temp);
+        if (temp.length > 0) {
+            temp = Arrays.copyOf(temp, temp.length-1);
+            return String.join("/", temp);
+        }
+        return path;
     }
 
     private static String normalizePath(String path) {
